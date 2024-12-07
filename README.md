@@ -9,14 +9,14 @@ Initially, I needed to clean the data and perform an initial foray into analyzin
 
 Then, I explored a univariate analysis, focusing on three different variables in three different studies ultimately looking for correlations with my goal feature: outage duration. These were: outage start time vs. outage duration, outage month vs. outage duration, and outage cause category vs outage duration. My hypotheses for these three variables were as follows: Do outages that begin outside of working hours take longer to fix? Is there a correlation between outage duration and peak energy grid usage hours? Further, do higher usage months –– like the winter months –– correlate to longer or shorter outages? Do certain causes of outages correlate to longer fix times, eg. hurricanes compared to vandalism? 
 
-Next, I wanted to dive deeper into a bivariate analysis, leveraging combined and related features to better understand patterns in the dataset, and thus build a better predictive model. The first combination of features I examined was climate category and cause category. I was particularly curious if harsher climate environments experiencing weather related outages took longer to fix than warmer climate areas. Next, I looked at cause category and cause category detail to investigate if more granular documentation helped in finding correlations. Finally, I investigated ... 
+Next, I wanted to dive deeper into a bivariate analysis, leveraging combined and related features to better understand patterns in the dataset, and thus build a better predictive model. The first combination of features I examined was climate category and cause category. I was particularly curious if harsher climate environments experiencing weather related outages took longer to fix than warmer climate areas. Next, I looked at cause category and cause category detail to investigate if more granular documentation helped in finding correlations. Finally, I investigated 
 
-# Cleaning the Dataset
+# Data Cleaning and Exploratory Data Analysis
 It is critical when working on any data science analysis of a large dataset to thoroughly sanitize and normalize the data. This is especially true when trying to later build a predictive model for generalizing on unseen data, as the more regularized the training data the better the model can recognize true patterns within the data. 
 
-# Predicting the Number of Customers Affected by a Power Outage
+There were two cases of imputation necessary for this dataset: numerical and categorical imputation. For numerical imputation I decided to use the mean of all rows for the given state, to reduce the scope of the means to a more representative range. For categorical imputation, I took it one step further, devising a more detailed custom scheme. First, I calculated the most common values for the column in question, "cause.category.detail", for each postal code and annual quarter (calculated by binning the month values into four quarters). Then, I merged that new group back into the main DataFrame. Finally, I filled the missing values of the "cause.category.detail" column with the corresponding values, and dropped the temporary imputation columnn from the DataFrame. 
 
-## Problem Statement:
+# Framing a Prediction Problem
 I aim to predict the **number of customers affected by a power outage** based on historical data and various features such as weather conditions, region demographics, and outage characteristics.
 
 ### Type of Problem:
@@ -52,7 +52,7 @@ For a regression problem, the most common evaluation metrics are:
 - **MAE** is chosen because it provides a clear and interpretable measure of how far, on average, the model's predictions are from the actual number of customers affected.
 - **RMSE** is also valuable because it gives more weight to larger errors, which is important in cases where predicting a large number of affected customers correctly is critical (e.g., for resource allocation).
 
-The goal is to minimize these metrics, and depending on the application, we might prefer one over the other based on whether we want to penalize larger errors more (RMSE) or simply understand average performance (MAE).
+The goal is to minimize these metrics, and depending on the application, we might prefer one over the other based on whether we want to penalize larger errors more (RMSE) or simply understand average performance (MAE). It's worth noting that I also normalize both RMSE and MAE to gain a better intuition for the quality of the model's prediction, given that the target variable's values are very large. 
 
 ## Additional Considerations for Future Model Improvement:
 - **Feature Engineering**: It may be useful to create additional features such as:
@@ -63,11 +63,40 @@ The goal is to minimize these metrics, and depending on the application, we migh
 - **Data Availability**: Ensure that data from different regions and varying weather conditions is available to train the model on a variety of outage scenarios, improving the generalizability of the model.
 
 # Baseline Model
+The baseline model uses a **RandomForestRegressor** to predict the number of **customers affected** by a power outage. The model is trained using two features:
 
+- **Features:**
+  1. **ANOMALY.LEVEL** (Quantitative): This feature indicates the level of weather anomaly affecting the outage. It is quantitative and is represented with a numerical value, which in this dataset has a range of [-1.6, 2.3].
+  2. **TOTAL.CUSTOMERS** (Quantitative): This feature represents the population of the affected region. It is a continuous numerical feature.
+  3. **CLIMATE.CATEGORY** (Nominal): This feature represents the type of climate for the region of the given outage
+  4. **CAUSE.CATEGORY.DETAIL** (Nominal): 
+  5. **RES.CUST.PCT** (Quantitative): 
+
+- **Feature Preprocessing:**
+  - **ANOMALY.LEVEL**: Since it is a categorical variable, it is encoded using **OneHotEncoder** in the pipeline to transform it into binary features.
+  - **REGION.POPULATION**: This numerical feature is standardized using **StandardScaler** to normalize its scale, ensuring the model performs efficiently.
+
+- **Imputation**: Missing values are handled as follows:
+  - Numerical features are imputed with the **mean** of the column.
+  - Categorical features are imputed with a custom **mode** (most frequent value).
+
+- **Model Evaluation:**
+  - **Mean Absolute Error (MAE)** and **Root Mean Squared Error (RMSE)** were used as performance metrics to evaluate the model.
+  - **Cross-validation** was performed with 5 folds to assess the generalization ability of the model.
+
+#### Model Performance:
+- **MAE**: [Insert value here]
+- **RMSE**: [Insert value here]
+- **Cross-validated MAE**: [Insert value here]
+
+#### Model Assessment:
+The baseline model provides a solid starting point, with reasonable accuracy based on the performance metrics. The model utilizes simple preprocessing steps (scaling and encoding) and does not incorporate advanced feature engineering or hyperparameter tuning.
+
+Based on the performance of the baseline model, it can be considered a **reasonable first step**. However, further improvements can be made by exploring additional feature engineering (e.g., combining features or adding new ones) and performing hyperparameter tuning to optimize the RandomForestRegressor for better predictive power.
+
+While the model’s performance can be seen as satisfactory, especially in comparison to a non-optimized or simple model, there is still room for improvement with more sophisticated techniques, such as better feature transformations or using different algorithms.
 
 # Final Model
-### Modeling Algorithm and Hyperparameter Tuning
-
 For the final model, I chose the **RandomForestRegressor**, an ensemble learning algorithm that combines multiple decision trees to improve predictive performance and reduce overfitting. It is particularly effective for regression tasks with complex relationships between features and target variables.
 
 #### Hyperparameters Tuned:
