@@ -1,4 +1,4 @@
-# US Power Outages Analysis
+# How long will the power be out? 
 Project for EECS 398-003 at the University of Michigan
 By David Lisbonne
 
