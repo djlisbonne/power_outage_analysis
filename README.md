@@ -13,6 +13,21 @@ Next, I wanted to dive deeper into a bivariate analysis, and here I did a lot of
 
 Then I expanded my multivariate analysis and looked at combinations of three variables. Here, the first combination of features I examined was climate category and cause category. I was particularly curious if harsher climate environments experiencing weather related outages took longer to fix than warmer climate areas. Finally, I looked at cause category and cause category detail to investigate if more granular documentation helped in finding correlations. 
 
+Below is a table outlining the columns of interest in this dataset:
+| Column                | Description |
+|-----------------------|-------------|
+| `'MONTH'`             | The month when the power outage occurred. |
+| `'U.S._STATE'`        | The state in which the power outage took place. |
+| `'CLIMATE.REGION'`    | One of the nine U.S. Climate regions as defined by the National Centers for Environmental Information. |
+| `'ANOMALY.LEVEL'`     | The Oceanic El Niño/La Niña (ONI) index value, indicating whether the climate was experiencing cold (La Niña) or warm (El Niño) episodes during the season. |
+| `'OUTAGE.START.DATE'` | The specific day of the year when the power outage began. |
+| `'OUTAGE.START.TIME'` | The exact time during the day when the outage started. |
+| `'CAUSE.CATEGORY'`    | A categorical classification of the main causes behind the power outage event. |
+| `'OUTAGE.DURATION'`   | The length of time (in minutes) for which the power outage lasted. |\
+| `'CUSTOMERS.AFFECTED'`| The number of residential, commercial, and industrial customers affected by the power outage. |
+| `'TOTAL.CUSTOMERS'`   | The total number of customers (residential, commercial, and industrial) served by electricity providers in the state. |
+| `'RES.CUST.PCT'`      | The percentage of region's customers who are residential |
+
 # Data Cleaning and Exploratory Data Analysis
 It is critical when working on any data science analysis of a large dataset to thoroughly sanitize and normalize the data. This is especially true when trying to later build a predictive model for generalizing on unseen data, as the more regularized the training data the better the model can recognize true patterns within the data. 
 
