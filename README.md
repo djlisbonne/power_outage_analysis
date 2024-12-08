@@ -16,16 +16,60 @@ It is critical when working on any data science analysis of a large dataset to t
 
 There were two cases of imputation necessary for this dataset: numerical and categorical imputation. For numerical imputation I decided to use the mean of all rows for the given state, to reduce the scope of the means to a more representative range. For categorical imputation, I took it one step further, devising a more detailed custom scheme. First, I calculated the most common values for the column in question, "cause.category.detail", for each postal code and annual quarter (calculated by binning the month values into four quarters). Then, I merged that new group back into the main DataFrame. Finally, I filled the missing values of the "cause.category.detail" column with the corresponding values, and dropped the temporary imputation columnn from the DataFrame. 
 
+## Grouping and Aggregates
+Before delving into building the predictive models, I was curious to see how anomaly levels and outages related to the cause category of outages. To better understand this, I created a pivot table with cause category as the index, and then displayed the ranges of anomaly levels, as well as the median outage duration for those categories. This pivot table is shown below. 
+
+| CAUSE.CATEGORY                |   ('ANOMALY.LEVEL', 'max') |   ('ANOMALY.LEVEL', 'min') |   ('OUTAGE.DURATION', 'median') |
+|:------------------------------|---------------------------:|---------------------------:|--------------------------------:|
+| equipment failure             |                        1.3 |                       -1.4 |                           221   |
+| fuel supply emergency         |                        2   |                       -1.4 |                          3960   |
+| intentional attack            |                        2.3 |                       -1.3 |                            56   |
+| islanding                     |                        2   |                       -1.5 |                            77.5 |
+| public appeal                 |                        2   |                       -1.4 |                           455   |
+| severe weather                |                        2.3 |                       -1.6 |                          2460   |
+| system operability disruption |                        2.3 |                       -1.5 |                           215   |
+
 ## Univariate Analyses
 As mentioned in the introduction, I performed three univariate analyses to better understand correlations between features I expected might be important, and my ultimate target variable "outage duration". The first examined the outage start time vs the outage duration, under the hypothesis that perhaps outages ocurring outside of working hours might take longer to fix. This theory doesn't appear to be very well supported by the data, and the plot shows weak correlation between the timing of an outage and its duration. 
 
 <iframe
   src="assets/fig1.html"
-  width="800"
+  width="600"
   height="600"
   frameborder="0"
 ></iframe>
 **Figure 1**: Plot of outage start time vs outage duration
+
+The next analysis I performed was to plot the outage month vs the outage duration, testing the hypothesis that harsher environmental conditions in winter might make repairs or fixes more difficult. This also proved to have a weak direct correlation, largely due to the number of outages itself. 
+
+<iframe
+  src="assets/fig2.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
+**Figure 2**: Plot of outage month vs outage duration
+
+Finally, the last univariate analysis I looked into was the outage cause category vs the outage duration. Here, the hypothesis was that harsher, more extreme causes like severe weather, might also correlate to longer outages. This proved to be true, especially as shown by the medians of the outage durations by categories. 
+
+<iframe
+  src="assets/fig3_1.html"
+  width="600"
+  height="600"
+  frameborder="0"
+></iframe>
+**Figure 3**: Bar chart of median outage durations by cause category
+
+## Bivariate Analyses
+I also examined two bivariate correlations, the first between cause category and climate category, vs outage duration, and the second between cause category and cause category detail (more granular description of the cause) vs outage duration. My thought process for the first analysis was to understand whether certain types of outage causes are exascerbated by specific climate conditions, wherein they result in longer outages. This relationship proved to be evidently clear with fuel shortages, notably how normal climate conditions were the shortest duration. This makes sense because colder environment likely have higher fuel requirements, thus when shortages occur it would take longer to assemble the requisite fuel to end the outage. Similarly, for warmer climates, they are likely less prepared for such an eventuality so any shortage of fuel would take longer to rebuild what little supply they likely had originally. Below is the box plot for my first analysis.
+
+<iframe
+  src="assets/fig4.html"
+  width="800"
+  height="400"
+  frameborder="0"
+></iframe>
+**Figure 4**: Bivariate box plot showing relationship between cause category and climate category vs outage duration. 
 
 # Framing a Prediction Problem
 I aim to predict the **number of customers affected by a power outage** based on historical data and various features such as weather conditions, region demographics, and outage characteristics.
