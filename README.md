@@ -9,7 +9,7 @@ Initially, I needed to clean the data and perform an initial foray into analyzin
 
 Then, I explored a univariate analysis, focusing on three different variables in three different studies ultimately looking for correlations with my goal feature: outage duration. These were: outage start time vs. outage duration, outage month vs. outage duration, and outage cause category vs outage duration. My hypotheses for these three variables were as follows: Do outages that begin outside of working hours take longer to fix? Is there a correlation between outage duration and peak energy grid usage hours? Further, do higher usage months –– like the winter months –– correlate to longer or shorter outages? Do certain causes of outages correlate to longer fix times, eg. hurricanes compared to vandalism? 
 
-Next, I wanted to dive deeper into a bivariate analysis, leveraging combined and related features to better understand patterns in the dataset, and thus build a better predictive model. The first combination of features I examined was climate category and cause category. I was particularly curious if harsher climate environments experiencing weather related outages took longer to fix than warmer climate areas. Next, I looked at cause category and cause category detail to investigate if more granular documentation helped in finding correlations. Finally, I investigated 
+Next, I wanted to dive deeper into a bivariate analysis, leveraging combined and related features to better understand patterns in the dataset, and thus build a better predictive model. The first combination of features I examined was climate category and cause category. I was particularly curious if harsher climate environments experiencing weather related outages took longer to fix than warmer climate areas. Finally, I looked at cause category and cause category detail to investigate if more granular documentation helped in finding correlations. 
 
 # Data Cleaning and Exploratory Data Analysis
 It is critical when working on any data science analysis of a large dataset to thoroughly sanitize and normalize the data. This is especially true when trying to later build a predictive model for generalizing on unseen data, as the more regularized the training data the better the model can recognize true patterns within the data. 
@@ -34,7 +34,7 @@ As mentioned in the introduction, I performed three univariate analyses to bette
 
 <iframe
   src="assets/fig1.html"
-  width="600"
+  width="800"
   height="600"
   frameborder="0"
 ></iframe>
@@ -44,7 +44,7 @@ The next analysis I performed was to plot the outage month vs the outage duratio
 
 <iframe
   src="assets/fig2.html"
-  width="600"
+  width="800"
   height="600"
   frameborder="0"
 ></iframe>
@@ -54,7 +54,7 @@ Finally, the last univariate analysis I looked into was the outage cause categor
 
 <iframe
   src="assets/fig3_1.html"
-  width="600"
+  width="800"
   height="600"
   frameborder="0"
 ></iframe>
@@ -124,30 +124,30 @@ The baseline model uses a **RandomForestRegressor** to predict the number of **c
   1. **ANOMALY.LEVEL** (Quantitative): This feature indicates the level of weather anomaly affecting the outage. It is quantitative and is represented with a numerical value, which in this dataset has a range of [-1.6, 2.3].
   2. **TOTAL.CUSTOMERS** (Quantitative): This feature represents the population of the affected region. It is a continuous numerical feature.
   3. **CLIMATE.CATEGORY** (Nominal): This feature represents the type of climate for the region of the given outage
-  4. **CAUSE.CATEGORY.DETAIL** (Nominal): 
-  5. **RES.CUST.PCT** (Quantitative): 
+  4. **CAUSE.CATEGORY.DETAIL** (Nominal): This feature provides a more granular description of the cause category.
+  5. **RES.CUST.PCT** (Quantitative): This feature indicates the percent of the region's total customers who are residential. 
 
 - **Feature Preprocessing:**
-  - **ANOMALY.LEVEL**: Since it is a categorical variable, it is encoded using **OneHotEncoder** in the pipeline to transform it into binary features.
-  - **REGION.POPULATION**: This numerical feature is standardized using **StandardScaler** to normalize its scale, ensuring the model performs efficiently.
+  - **REGION.POPULATION** and **TOTAL.CUSTOMERS**: This numerical feature is standardized using **StandardScaler** to normalize its scale, ensuring the model performs efficiently.
 
 - **Imputation**: Missing values are handled as follows:
   - Numerical features are imputed with the **mean** of the column.
-  - Categorical features are imputed with a custom **mode** (most frequent value).
+  - Categorical features are imputed with the **mode** (most frequent value).
 
 - **Model Evaluation:**
   - **Mean Absolute Error (MAE)** and **Root Mean Squared Error (RMSE)** were used as performance metrics to evaluate the model.
   - **Cross-validation** was performed with 5 folds to assess the generalization ability of the model.
 
 #### Model Performance:
-- **MAE**: [Insert value here]
-- **RMSE**: [Insert value here]
-- **Cross-validated MAE**: [Insert value here]
+- **MAE**: 113091.42
+- **RMSE**: 361272.1
+- **Cross-validated MAE**: 97469.11
+- **Normalized MAE (NMAE)**: **0.04**
 
 #### Model Assessment:
 The baseline model provides a solid starting point, with reasonable accuracy based on the performance metrics. The model utilizes simple preprocessing steps (scaling and encoding) and does not incorporate advanced feature engineering or hyperparameter tuning.
 
-Based on the performance of the baseline model, it can be considered a **reasonable first step**. However, further improvements can be made by exploring additional feature engineering (e.g., combining features or adding new ones) and performing hyperparameter tuning to optimize the RandomForestRegressor for better predictive power.
+Based on the performance of the baseline model, it can be considered a reasonable first step, albeith with quite good accuracy at 4% off. However, further improvements can be made by exploring additional feature engineering (e.g., combining features or adding new ones) and performing hyperparameter tuning to optimize the RandomForestRegressor for better predictive power.
 
 While the model’s performance can be seen as satisfactory, especially in comparison to a non-optimized or simple model, there is still room for improvement with more sophisticated techniques, such as better feature transformations or using different algorithms.
 
@@ -161,10 +161,26 @@ For the final model, I chose the **RandomForestRegressor**, an ensemble learning
 - **`min_samples_leaf`**: Minimum samples required at a leaf node. Best value: **2**
 
 #### Hyperparameter Selection Method:
-I used **GridSearchCV** with 3-fold cross-validation to search over the hyperparameter grid and select the best combination. The performance was evaluated using **Negative Mean Absolute Error (neg_mean_absolute_error)** as the scoring metric.
+I used **GridSearchCV** with 3-fold cross-validation to search over the hyperparameter grid and select the best combination. The performance was evaluated using **Normalized Mean Absolute Error (neg_mean_absolute_error)** as the scoring metric.
 
 #### Model Improvement:
 - **Baseline Model**: Used a basic RandomForestRegressor with default hyperparameters, achieving an NMAE of **0.04**.
 - **Final Model**: The tuned RandomForestRegressor, with feature engineering (e.g., log-transformed and derived features), resulted in a reduced error of **0.02**, improving the predictive accuracy over the baseline.
+  
+#### Model Performance:
+- **MAE**: 2420.39
+- **RMSE**: 5572.70
+- **Cross-validated MAE**: 2742.59
+- **Normalized MAE (NMAE)**: **0.02**
 
-The Final Model outperformed the baseline by using optimal hyperparameters and additional feature transformations, leading to better generalization and lower error.
+The Final Model outperformed the baseline by using optimal hyperparameters and additional feature transformations, leading to better generalization and lower error. I am happy with the Final Model's performance, cutting down NMAE by 50%. 
+
+However, the model certainly isn't perfect, and can no doubt be improved upon with more complex methods and more training data. To get a sense of it's practical accuracy, here is a chart of the residuals of the final model. 
+
+<iframe
+  src="assets/finalmodelresiduals.html"
+  width="800"
+  height="400"
+  frameborder="0"
+></iframe>
+**Figure 5**: Histogram of residuals for final model
