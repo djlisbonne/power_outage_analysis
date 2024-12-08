@@ -32,7 +32,15 @@ Below is a table outlining the columns of interest in this dataset:
 # Data Cleaning and Exploratory Data Analysis
 It is critical when working on any data science analysis of a large dataset to thoroughly sanitize and normalize the data. This is especially true when trying to later build a predictive model for generalizing on unseen data, as the more regularized the training data the better the model can recognize true patterns within the data. 
 
-There were two cases of imputation necessary for this dataset: numerical and categorical imputation. For numerical imputation I decided to use the mean of all rows for the given state, to reduce the scope of the means to a more representative range. For categorical imputation, I took it one step further, devising a more detailed custom scheme. First, I calculated the most common values for the column in question, "cause.category.detail", for each postal code and annual quarter (calculated by binning the month values into four quarters). Then, I merged that new group back into the main DataFrame. Finally, I filled the missing values of the "cause.category.detail" column with the corresponding values, and dropped the temporary imputation columnn from the DataFrame. 
+There were two cases of imputation necessary for this dataset: numerical and categorical imputation. For numerical imputation I decided to use the mean of all rows for the given state, to reduce the scope of the means to a more representative range. For categorical imputation, I took it one step further, devising a more detailed custom scheme. First, I calculated the most common values for the column in question, "cause.category.detail", for each postal code and annual quarter (calculated by binning the month values into four quarters). Then, I merged that new group back into the main DataFrame. Finally, I filled the missing values of the "cause.category.detail" column with the corresponding values, and dropped the temporary imputation columnn from the DataFrame. Below is the head of the cleaned DataFrame with a subset of columns for readability:
+
+|    |   MONTH |   ANOMALY.LEVEL | CLIMATE.CATEGORY   |   RES.CUST.PCT | CAUSE.CATEGORY     |
+|---:|--------:|----------------:|:-------------------|---------------:|:-------------------|
+|  1 |       7 |            -0.3 | normal             |        88.9448 | severe weather     |
+|  2 |       5 |            -0.1 | normal             |        88.8335 | intentional attack |
+|  3 |      10 |            -1.5 | cold               |        88.9206 | severe weather     |
+|  4 |       6 |            -0.1 | normal             |        88.8954 | severe weather     |
+|  5 |       7 |             1.2 | warm               |        88.8216 | severe weather     |
 
 ## Grouping and Aggregates
 Before delving into building the predictive models, I was curious to see how anomaly levels and outages related to the cause category of outages. To better understand this, I created a pivot table with cause category as the index, and then displayed the ranges of anomaly levels, as well as the median outage duration for those categories. This pivot table is shown below. 
