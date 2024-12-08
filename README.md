@@ -7,9 +7,11 @@ In this project, I investigate a comprehensive dataset published by Purdue Unive
 
 Initially, I needed to clean the data and perform an initial foray into analyzing the dataset. It contains over 1500 rows, with some more niche columns –– for example, HURRICANE_NAME –– being largely null. As a result, I first needed to sanitize, organize and normalize the dataset.
 
-Then, I explored a univariate analysis, focusing on three different variables in three different studies ultimately looking for correlations with my goal feature: outage duration. These were: outage start time vs. outage duration, outage month vs. outage duration, and outage cause category vs outage duration. My hypotheses for these three variables were as follows: Do outages that begin outside of working hours take longer to fix? Is there a correlation between outage duration and peak energy grid usage hours? Further, do higher usage months –– like the winter months –– correlate to longer or shorter outages? Do certain causes of outages correlate to longer fix times, eg. hurricanes compared to vandalism? 
+Then, I explored a univariate analysis, focusing on understanding the distribution of causes in the "CAUSE.CATEGORY" column of the dataset. This was of particular interest because I thought it might be a key variable for a model to leverage while learning. 
 
-Next, I wanted to dive deeper into a bivariate analysis, leveraging combined and related features to better understand patterns in the dataset, and thus build a better predictive model. The first combination of features I examined was climate category and cause category. I was particularly curious if harsher climate environments experiencing weather related outages took longer to fix than warmer climate areas. Finally, I looked at cause category and cause category detail to investigate if more granular documentation helped in finding correlations. 
+Next, I wanted to dive deeper into a bivariate analysis, and here I did a lot of analysis, leveraging combined and related features to better understand patterns in the dataset, and thus build a better predictive model. First, I looked at correlations of two variables using scatter plots. These were: outage start time vs. outage duration, outage month vs. outage duration, and outage cause category vs outage duration. My hypotheses for these three variables were as follows: Do outages that begin outside of working hours take longer to fix? Is there a correlation between outage duration and peak energy grid usage hours? Further, do higher usage months –– like the winter months –– correlate to longer or shorter outages? Do certain causes of outages correlate to longer fix times, eg. hurricanes compared to vandalism? 
+
+Then I expanded my multivariate analysis and looked at combinations of three variables. Here, the first combination of features I examined was climate category and cause category. I was particularly curious if harsher climate environments experiencing weather related outages took longer to fix than warmer climate areas. Finally, I looked at cause category and cause category detail to investigate if more granular documentation helped in finding correlations. 
 
 # Data Cleaning and Exploratory Data Analysis
 It is critical when working on any data science analysis of a large dataset to thoroughly sanitize and normalize the data. This is especially true when trying to later build a predictive model for generalizing on unseen data, as the more regularized the training data the better the model can recognize true patterns within the data. 
@@ -29,8 +31,8 @@ Before delving into building the predictive models, I was curious to see how ano
 | severe weather                |                        2.3 |                       -1.6 |                          2460   |
 | system operability disruption |                        2.3 |                       -1.5 |                           215   |
 
-## Univariate Analyses
-As mentioned in the introduction, I performed three univariate analyses to better understand correlations between features I expected might be important, and my ultimate target variable "outage duration". The first examined the outage start time vs the outage duration, under the hypothesis that perhaps outages ocurring outside of working hours might take longer to fix. This theory doesn't appear to be very well supported by the data, and the plot shows weak correlation between the timing of an outage and its duration. 
+## Univariate Analysis
+One of the most interesting columns of the dataset is cause category, and so I wanted to uunderstand the univariate distribution of the column. This would help me gain insight into whether or not it was as a good training parameter -- for example, if the column were incredibly heavily weighted to one cause, then it would be hard for a model to learn anything from that feature. Below is the histogram of the cause category column values. 
 
 <iframe
   src="assets/fig1.html"
@@ -40,6 +42,17 @@ As mentioned in the introduction, I performed three univariate analyses to bette
 ></iframe>
 **Figure 1**: Plot of outage start time vs outage duration
 
+## Bivariate Analyses
+As mentioned in the introduction, I performed three biivariate analyses to better understand correlations between features I expected might be important, and my ultimate target variable "outage duration". The first examined the outage start time vs the outage duration, under the hypothesis that perhaps outages ocurring outside of working hours might take longer to fix. This theory doesn't appear to be very well supported by the data, and the plot shows weak correlation between the timing of an outage and its duration. 
+
+<iframe
+  src="assets/fig1.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+**Figure 2**: Plot of outage start time vs outage duration
+
 The next analysis I performed was to plot the outage month vs the outage duration, testing the hypothesis that harsher environmental conditions in winter might make repairs or fixes more difficult. This also proved to have a weak direct correlation, largely due to the number of outages itself. 
 
 <iframe
@@ -48,20 +61,19 @@ The next analysis I performed was to plot the outage month vs the outage duratio
   height="600"
   frameborder="0"
 ></iframe>
-**Figure 2**: Plot of outage month vs outage duration
+**Figure 3**: Plot of outage month vs outage duration
 
 Finally, the last univariate analysis I looked into was the outage cause category vs the outage duration. Here, the hypothesis was that harsher, more extreme causes like severe weather, might also correlate to longer outages. This proved to be true, especially as shown by the medians of the outage durations by categories. 
 
 <iframe
-  src="assets/fig3_1.html"
+  src="assets/fig3_2.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
-**Figure 3**: Bar chart of median outage durations by cause category
+**Figure 4**: Bar chart of median outage durations by cause category
 
-## Bivariate Analyses
-I also examined two bivariate correlations, the first between cause category and climate category, vs outage duration, and the second between cause category and cause category detail (more granular description of the cause) vs outage duration. My thought process for the first analysis was to understand whether certain types of outage causes are exascerbated by specific climate conditions, wherein they result in longer outages. This relationship proved to be evidently clear with fuel shortages, notably how normal climate conditions were the shortest duration. This makes sense because colder environment likely have higher fuel requirements, thus when shortages occur it would take longer to assemble the requisite fuel to end the outage. Similarly, for warmer climates, they are likely less prepared for such an eventuality so any shortage of fuel would take longer to rebuild what little supply they likely had originally. Below is the box plot for my first analysis.
+I also examined two multivariate correlations, the first between cause category and climate category, vs outage duration, and the second between cause category and cause category detail (more granular description of the cause) vs outage duration. My thought process for the first analysis was to understand whether certain types of outage causes are exascerbated by specific climate conditions, wherein they result in longer outages. This relationship proved to be evidently clear with fuel shortages, notably how normal climate conditions were the shortest duration. This makes sense because colder environment likely have higher fuel requirements, thus when shortages occur it would take longer to assemble the requisite fuel to end the outage. Similarly, for warmer climates, they are likely less prepared for such an eventuality so any shortage of fuel would take longer to rebuild what little supply they likely had originally. Below is the box plot for my first analysis.
 
 <iframe
   src="assets/fig4.html"
@@ -69,19 +81,19 @@ I also examined two bivariate correlations, the first between cause category and
   height="400"
   frameborder="0"
 ></iframe>
-**Figure 4**: Bivariate box plot showing relationship between cause category and climate category vs outage duration. 
+**Figure 5**: Bivariate box plot showing relationship between cause category and climate category vs outage duration. 
 
 # Framing a Prediction Problem
-I aim to predict the **number of customers affected by a power outage** based on historical data and various features such as weather conditions, region demographics, and outage characteristics.
+I aim to predict the **outage duration** based on historical data and various features such as weather conditions, region demographics, and outage characteristics.
 
 ### Type of Problem:
-This is a **regression problem**, since the response variable (number of customers affected) is continuous.
+This is a **regression problem**, since the response variable (outage duration) is continuous.
 
 ### Response Variable (What We Are Predicting):
-The target variable is the **number of customers affected by a power outage** (a continuous variable representing the total count of affected residential customers).
+The target variable is the **outage duration** (a continuous variable representing the duration in minutes of a given outage).
 
 ### Why I Chose This Response Variable:
-The number of customers affected by a power outage is a key metric for utility companies, as it helps to assess the severity of the outage. Knowing this allows better resource allocation, such as deploying repair crews, communicating with customers, and prioritizing areas for restoration. It also provides valuable insights into the reliability of the power grid in different regions and under different conditions.
+The outage duration is a key metric for utility companies, as it helps to assess the severity of the outage. Knowing this allows better resource allocation, such as deploying repair crews, communicating with customers, and prioritizing areas for restoration. It also provides valuable insights into the reliability of the power grid in different regions and under different conditions.
 
 ### Features (Information Available at the Time of Prediction):
 When making the prediction, I would only have access to the **features available before or during the early stages of the outage**. These could include:
@@ -92,22 +104,22 @@ When making the prediction, I would only have access to the **features available
 - **Region infrastructure and power utilization**: This includes characteristics of the power grid in that area and its capacity relative to actual usage, which can indicate the potential number of customers affected.
 
 ### Information Not Available at Time of Prediction:
-- The actual duration of the outage and the recovery time would **not** be known at the time of prediction, as these depend on the unfolding events.
 - The total demand loss or actual recovery metrics would also not be available before the outage or during the initial period.
+- Additionally, the actual number of affected customers, and their distributions, would likely not be known. 
 
 ### Modeling Approach:
-We can approach this problem using a **regression model**. We'll train the model using the selected features and predict the continuous response variable: **number of customers affected**. I plan on using a linear regression for the baseline model, and then a Random Forest Classifier for the final predictive model. 
+We can approach this problem using a **regression model**. We'll train the model using the selected features and predict the continuous response variable: **outage duration**. I plan on using a linear regression for the baseline model, and then a Random Forest Classifier for the final predictive model. 
 
 ### Evaluation Metric:
 For a regression problem, the most common evaluation metrics are:
-- **Mean Absolute Error (MAE)**: This metric calculates the average of the absolute differences between predicted and actual values. It is easy to interpret and gives a straightforward measure of model accuracy in predicting the number of customers affected.
+- **Mean Absolute Error (MAE)**: This metric calculates the average of the absolute differences between predicted and actual values. It is easy to interpret and gives a straightforward measure of model accuracy in predicting the outage duration.
 - **Root Mean Squared Error (RMSE)**: This metric penalizes larger errors more heavily and is useful when large prediction errors are particularly undesirable in this context.
 
 ### Why MAE and RMSE?
-- **MAE** is chosen because it provides a clear and interpretable measure of how far, on average, the model's predictions are from the actual number of customers affected.
+- **MAE** is chosen because it provides a clear and interpretable measure of how far, on average, the model's predictions are from the actual outage duration.
 - **RMSE** is also valuable because it gives more weight to larger errors, which is important in cases where predicting a large number of affected customers correctly is critical (e.g., for resource allocation).
 
-The goal is to minimize these metrics, and depending on the application, we might prefer one over the other based on whether we want to penalize larger errors more (RMSE) or simply understand average performance (MAE). It's worth noting that I also normalize both RMSE and MAE to gain a better intuition for the quality of the model's prediction, given that the target variable's values are very large. 
+The goal is to minimize these metrics, and depending on the application, we might prefer one over the other based on whether we want to penalize larger errors more (RMSE) or simply understand average performance (MAE). It's worth noting that I also normalize the MAE to gain a better intuition for the quality of the model's prediction, given that the target variable's values are very large. 
 
 ## Additional Considerations for Future Model Improvement:
 - **Feature Engineering**: It may be useful to create additional features such as:
@@ -118,7 +130,7 @@ The goal is to minimize these metrics, and depending on the application, we migh
 - **Data Availability**: Ensure that data from different regions and varying weather conditions is available to train the model on a variety of outage scenarios, improving the generalizability of the model.
 
 # Baseline Model
-The baseline model uses a **RandomForestRegressor** to predict the number of **customers affected** by a power outage. The model is trained using two features:
+The baseline model uses a **RandomForestRegressor** to predict the **outage duration**. The model is trained using the following features:
 
 - **Features:**
   1. **ANOMALY.LEVEL** (Quantitative): This feature indicates the level of weather anomaly affecting the outage. It is quantitative and is represented with a numerical value, which in this dataset has a range of [-1.6, 2.3].
@@ -128,7 +140,7 @@ The baseline model uses a **RandomForestRegressor** to predict the number of **c
   5. **RES.CUST.PCT** (Quantitative): This feature indicates the percent of the region's total customers who are residential. 
 
 - **Feature Preprocessing:**
-  - **REGION.POPULATION** and **TOTAL.CUSTOMERS**: This numerical feature is standardized using **StandardScaler** to normalize its scale, ensuring the model performs efficiently.
+  - **REGION.POPULATION** and **TOTAL.CUSTOMERS**: These numerical features are standardized using **StandardScaler** to normalize its scale, ensuring the model performs efficiently.
 
 - **Imputation**: Missing values are handled as follows:
   - Numerical features are imputed with the **mean** of the column.
@@ -147,7 +159,7 @@ The baseline model uses a **RandomForestRegressor** to predict the number of **c
 #### Model Assessment:
 The baseline model provides a solid starting point, with reasonable accuracy based on the performance metrics. The model utilizes simple preprocessing steps (scaling and encoding) and does not incorporate advanced feature engineering or hyperparameter tuning.
 
-Based on the performance of the baseline model, it can be considered a reasonable first step, albeith with quite good accuracy at 4% off. However, further improvements can be made by exploring additional feature engineering (e.g., combining features or adding new ones) and performing hyperparameter tuning to optimize the RandomForestRegressor for better predictive power.
+Based on the performance of the baseline model, it can be considered a reasonable first step, albeit with quite good accuracy at 4% off. However, further improvements can be made by exploring additional feature engineering (e.g., combining features or adding new ones) and performing hyperparameter tuning to optimize the RandomForestRegressor for better predictive power.
 
 While the model’s performance can be seen as satisfactory, especially in comparison to a non-optimized or simple model, there is still room for improvement with more sophisticated techniques, such as better feature transformations or using different algorithms.
 
@@ -183,4 +195,4 @@ However, the model certainly isn't perfect, and can no doubt be improved upon wi
   height="400"
   frameborder="0"
 ></iframe>
-**Figure 5**: Histogram of residuals for final model
+**Figure 6**: Histogram of residuals for final model
