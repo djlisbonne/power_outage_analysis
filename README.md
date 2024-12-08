@@ -3,7 +3,7 @@ Project for EECS 398-003 at the University of Michigan
 By David Lisbonne
 
 # Introduction
-In this project, I investigate a comprehensive dataset published by Purdue University that catalogued power outages across the United States, along with a suite of external variables recorded for each outage. These additional features include geographical location of the outages, regional climate classifications, land-use characteristics, electricity consumption patterns and economic characteristics of the states affected by the outages.
+In this project, I investigate a comprehensive dataset published by Purdue University that catalogued power outages across the United States, along with a suite of external variables recorded for each outage. These additional features include geographical location of the outages, regional climate classifications, customer distributions, electricity consumption patterns and economic characteristics of the states affected by the outages.
 
 Initially, I needed to clean the data and perform an initial foray into analyzing the dataset. It contains over 1500 rows, with some more niche columns –– for example, HURRICANE_NAME –– being largely null. As a result, I first needed to sanitize, organize and normalize the dataset.
 
@@ -15,6 +15,17 @@ Next, I wanted to dive deeper into a bivariate analysis, leveraging combined and
 It is critical when working on any data science analysis of a large dataset to thoroughly sanitize and normalize the data. This is especially true when trying to later build a predictive model for generalizing on unseen data, as the more regularized the training data the better the model can recognize true patterns within the data. 
 
 There were two cases of imputation necessary for this dataset: numerical and categorical imputation. For numerical imputation I decided to use the mean of all rows for the given state, to reduce the scope of the means to a more representative range. For categorical imputation, I took it one step further, devising a more detailed custom scheme. First, I calculated the most common values for the column in question, "cause.category.detail", for each postal code and annual quarter (calculated by binning the month values into four quarters). Then, I merged that new group back into the main DataFrame. Finally, I filled the missing values of the "cause.category.detail" column with the corresponding values, and dropped the temporary imputation columnn from the DataFrame. 
+
+## Univariate Analyses
+As mentioned in the introduction, I performed three univariate analyses to better understand correlations between features I expected might be important, and my ultimate target variable "outage duration". The first examined the outage start time vs the outage duration, under the hypothesis that perhaps outages ocurring outside of working hours might take longer to fix. This theory doesn't appear to be very well supported by the data, and the plot shows weak correlation between the timing of an outage and its duration. 
+
+<iframe
+  src="assets/fig1.html"
+  width="800"
+  height="600"
+  frameborder="0"
+></iframe>
+**Figure 1**: Plot of outage start time vs outage duration
 
 # Framing a Prediction Problem
 I aim to predict the **number of customers affected by a power outage** based on historical data and various features such as weather conditions, region demographics, and outage characteristics.
