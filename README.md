@@ -5,7 +5,7 @@ By David Lisbonne
 # Introduction
 In this project, I investigate a comprehensive dataset published by Purdue University that catalogued power outages across the United States, along with a suite of external variables recorded for each outage. These additional features include geographical location of the outages, regional climate classifications, customer distributions, electricity consumption patterns and economic characteristics of the states affected by the outages.
 
-Initially, I needed to clean the data and perform an initial foray into analyzing the dataset. It contains over 1500 rows, with some more niche columns –– for example, HURRICANE_NAME –– being largely null. As a result, I first needed to sanitize, organize and normalize the dataset.
+Initially, I needed to clean the data and perform an initial foray into analyzing the dataset. It contains 1534 rows and 57 columns, with some more niche columns –– for example, HURRICANE_NAME –– being largely null. As a result, I first needed to sanitize, organize and normalize the dataset.
 
 Then, I explored a univariate analysis, focusing on understanding the distribution of causes in the "CAUSE.CATEGORY" column of the dataset. This was of particular interest because I thought it might be a key variable for a model to leverage while learning. 
 
@@ -14,6 +14,7 @@ Next, I wanted to dive deeper into a bivariate analysis, and here I did a lot of
 Then I expanded my multivariate analysis and looked at combinations of three variables. Here, the first combination of features I examined was climate category and cause category. I was particularly curious if harsher climate environments experiencing weather related outages took longer to fix than warmer climate areas. Finally, I looked at cause category and cause category detail to investigate if more granular documentation helped in finding correlations. 
 
 Below is a table outlining the columns of interest in this dataset:
+
 | Column                | Description |
 |-----------------------|-------------|
 | `'MONTH'`             | The month when the power outage occurred. |
@@ -50,12 +51,12 @@ Before delving into building the predictive models, I was curious to see how ano
 One of the most interesting columns of the dataset is cause category, and so I wanted to uunderstand the univariate distribution of the column. This would help me gain insight into whether or not it was as a good training parameter -- for example, if the column were incredibly heavily weighted to one cause, then it would be hard for a model to learn anything from that feature. Below is the histogram of the cause category column values. 
 
 <iframe
-  src="assets/fig1.html"
+  src="assets/uni_dist.html"
   width="800"
   height="600"
   frameborder="0"
 ></iframe>
-**Figure 1**: Plot of outage start time vs outage duration
+**Figure 1**: Univariate distribution of cause category
 
 ## Bivariate Analyses
 As mentioned in the introduction, I performed three biivariate analyses to better understand correlations between features I expected might be important, and my ultimate target variable "outage duration". The first examined the outage start time vs the outage duration, under the hypothesis that perhaps outages ocurring outside of working hours might take longer to fix. This theory doesn't appear to be very well supported by the data, and the plot shows weak correlation between the timing of an outage and its duration. 
