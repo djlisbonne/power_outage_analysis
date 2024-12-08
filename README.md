@@ -132,7 +132,7 @@ When making the prediction, I would only have access to the **features available
 - Additionally, the actual number of affected customers, and their distributions, would likely not be known. 
 
 ### Modeling Approach:
-We can approach this problem using a **regression model**. We'll train the model using the selected features and predict the continuous response variable: **outage duration**. I plan on using a linear regression for the baseline model, and then a Random Forest Classifier for the final predictive model. 
+We can approach this problem using a **regression model**. We'll train the model using the selected features and predict the continuous response variable: **outage duration**. 
 
 ### Evaluation Metric:
 For a regression problem, the most common evaluation metrics are:
@@ -188,7 +188,7 @@ Based on the performance of the baseline model, it can be considered a reasonabl
 While the model’s performance can be seen as satisfactory, especially in comparison to a non-optimized or simple model, there is still room for improvement with more sophisticated techniques, such as better feature transformations or using different algorithms.
 
 # Final Model
-For the final model, I chose the **RandomForestRegressor**, an ensemble learning algorithm that combines multiple decision trees to improve predictive performance and reduce overfitting. It is particularly effective for regression tasks with complex relationships between features and target variables.
+For the final model, I chose the **RandomForestRegressor**, an ensemble learning algorithm that combines multiple decision trees to improve predictive performance and reduce overfitting. It is particularly effective for regression tasks with complex relationships between features and target variables. I also created two new features, the log value of customers affected as well as the residential customers per region and used those to improve my model. Both of this give the model a better understanding of the importance of an outage, using the number of customers as a proxy. My hope is that this, in combination with the climate features, will better round out the model's ability to learn from prior data such that for new unseen data, it can generalize better using broad population metrics. 
 
 #### Hyperparameters Tuned:
 - **`n_estimators`**: Number of trees in the forest. Best value: **100**
@@ -197,7 +197,7 @@ For the final model, I chose the **RandomForestRegressor**, an ensemble learning
 - **`min_samples_leaf`**: Minimum samples required at a leaf node. Best value: **2**
 
 #### Hyperparameter Selection Method:
-I used **GridSearchCV** with 3-fold cross-validation to search over the hyperparameter grid and select the best combination. The performance was evaluated using **Normalized Mean Absolute Error (neg_mean_absolute_error)** as the scoring metric.
+I used **GridSearchCV** with 3-fold cross-validation to search over the hyperparameter grid and select the best combination. The performance was evaluated using **Negative Mean Absolute Error (neg_mean_absolute_error)** as the scoring metric.
 
 #### Model Improvement:
 - **Baseline Model**: Used a basic RandomForestRegressor with default hyperparameters, achieving an NMAE of **0.04**.
